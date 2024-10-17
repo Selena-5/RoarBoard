@@ -8,6 +8,8 @@ import {
 import "./App.css";
 import Profile from './Profile';
 import Clubs from './Clubs';
+import Login from './components/User/Login.components';
+import Register from './components/User/Register.components';
 
 function App() {
   return (
@@ -28,6 +30,8 @@ function App() {
 
       <Route path="/profile" element={<Profile />} />
       <Route path="/clubs" element={<Clubs />} />
+      <Route path="/login" element={<Login />} />
+      <Route path="/register" element={<Register />} />
     </Routes>
   </Router>
   );
