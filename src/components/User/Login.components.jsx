@@ -59,6 +59,9 @@ const Login = () => {
           />
         </div>
         <button type="submit">Login</button>
+        <form action="http://localhost:3000/register">
+          <input type="submit" value="Register" />
+        </form>
       </form>
       {message && <p>{message}</p>}
     </div>
