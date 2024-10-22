@@ -10,7 +10,8 @@ import Profile from './components/User/Profile';
 import Clubs from './Clubs';
 import Login from './components/User/Login.components';
 import Register from './components/User/Register.components';
-import Logout from './components/User/Logout.components'; // Import Logout component
+import Logout from './components/User/Logout.components';
+import Calendar from './Calendar'; // Import the Calendar component
 
 function App() {
   return (
@@ -28,13 +29,14 @@ function App() {
             </div>
             <div className="ml-auto">
               <Link className="btn btn-outline-light" to="/login">Login</Link>
-              <Link className="btn btn-outline-light" to="/logout">Logout</Link> {/* Add Logout link */}
+              <Link className="btn btn-outline-light" to="/logout">Logout</Link>
             </div>
           </div>
         </nav>
 
         <div className="container mt-4">
           <Routes>
+            <Route path="/" element={<Calendar />} /> {/* Calendar on the main page */}
             <Route path="/profile" element={<Profile />} />
             <Route path="/clubs" element={<Clubs />} />
             <Route path="/login" element={<Login />} />
