@@ -1,6 +1,6 @@
-// src/Login.js
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import './Login.css';
 
 const Login = () => {
   const [email, setEmail] = useState('');
@@ -17,6 +17,7 @@ const Login = () => {
         headers: {
           'Content-Type': 'application/json',
         },
+        credentials: 'include', // This is important to include cookies
         body: JSON.stringify({
           email,
           password,
@@ -27,7 +28,7 @@ const Login = () => {
 
       if (response.ok) {
         setMessage(data.message);
-        navigate('/clubs');
+        navigate('/clubs'); // Redirect to /clubs after successful login
       } else {
         setMessage('Login failed: ' + data.error);
       }
@@ -37,33 +38,37 @@ const Login = () => {
   };
 
   return (
-    <div>
+    <div className="login-container">
       <h2>Login</h2>
-      <form onSubmit={handleLogin}>
-        <div>
+      <form onSubmit={handleLogin} className="login-form">
+        <div className="form-group">
           <label>Email:</label>
           <input
             type="email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             required
+            className="form-control"
           />
         </div>
-        <div>
+        <div className="form-group">
           <label>Password:</label>
           <input
             type="password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             required
+            className="form-control"
           />
         </div>
-        <button type="submit">Login</button>
-        <form action="http://localhost:3000/register">
-          <input type="submit" value="Register" />
-        </form>
+        <button type="submit" className="btn btn-primary">Login</button>
       </form>
-      {message && <p>{message}</p>}
+
+      <p className="register-link">
+        Don't have an account? <a href="http://localhost:3000/register">Register here</a>
+      </p>
+
+      {message && <p className="message">{message}</p>}
     </div>
   );
 };
