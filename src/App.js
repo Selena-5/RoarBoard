@@ -6,10 +6,11 @@ import {
   Link
 } from "react-router-dom";
 import "./App.css";
-import Profile from './Profile';
+import Profile from './components/User/Profile';
 import Clubs from './Clubs';
 import Login from './components/User/Login.components';
 import Register from './components/User/Register.components';
+import Logout from './components/User/Logout.components'; // Import Logout component
 
 function App() {
   return (
@@ -27,6 +28,7 @@ function App() {
             </div>
             <div className="ml-auto">
               <Link className="btn btn-outline-light" to="/login">Login</Link>
+              <Link className="btn btn-outline-light" to="/logout">Logout</Link> {/* Add Logout link */}
             </div>
           </div>
         </nav>
@@ -37,6 +39,8 @@ function App() {
             <Route path="/clubs" element={<Clubs />} />
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
+            <Route path="/logout" element={<Logout />} />
+            <Route path="/protected" element={<div>Protected content will be here after development.</div>} />
           </Routes>
         </div>
       </div>
