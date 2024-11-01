@@ -2,6 +2,7 @@
 import React, { useEffect, useState } from 'react';
 import './Profile.css';
 import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
 
 const Profile = () => {
   const [user, setUser] = useState(null);
