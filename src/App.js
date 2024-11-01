@@ -12,6 +12,7 @@ import Login from './components/User/Login.components';
 import Register from './components/User/Register.components';
 import Logout from './components/User/Logout.components';
 import Calendar from './Calendar'; // Import the Calendar component
+import ClubCreationForm from './components/ClubCreationForm';
 
 function App() {
   return (
@@ -43,6 +44,7 @@ function App() {
             <Route path="/register" element={<Register />} />
             <Route path="/logout" element={<Logout />} />
             <Route path="/protected" element={<div>Protected content will be here after development.</div>} />
+            <Route path="/create-club" element={<ClubCreationForm />} />
           </Routes>
         </div>
       </div>
