@@ -5,22 +5,40 @@ import { useNavigate } from 'react-router-dom';
 function ClubCreationForm() {
     const [name, setName] = useState('');
     const [description, setDescription] = useState('');
-    const [leadName, setLeadName] = useState('');
     const navigate = useNavigate();
 
     const handleSubmit = (event) => {
         event.preventDefault();
-        axios.post('/api/clubs/create', { name, description, leadName })
-            .then(response => {
-                console.log(response.data);
-                // Optionally, you can navigate back to the profile or another page
-                navigate('/clubs');
-            })
-            .catch(error => {
-                console.error('There was an error creating the club!', error);
-            });
+        const token = localStorage.getItem('token'); // Fetch the token from local storage
+    
+        // Log the token to check if it's being retrieved correctly
+        console.log("Retrieved token:", token);
+    
+        if (!token) {
+            alert('No token found. Please log in first.');
+            return;
+        }
+    
+        axios.post('/api/clubs/create', { name, description }, { 
+            withCredentials: true, 
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        })
+        .then(response => {
+            console.log(response.data);
+            alert('Form has been submitted successfully');
+            navigate('/profile');
+        })
+        .catch(error => {
+            console.error('Error creating club:', error);
+            alert('Error creating club. Please try again.');
+        });
+        
     };
-
+    
+    
+    
     return (
         <form onSubmit={handleSubmit}>
             <div className="form-group">
@@ -41,17 +59,6 @@ function ClubCreationForm() {
                     className="form-control" 
                     value={description} 
                     onChange={(e) => setDescription(e.target.value)} 
-                    required 
-                />
-            </div>
-            <div className="form-group">
-                <label htmlFor="leadName">Your Name (Club Lead):</label>
-                <input 
-                    type="text" 
-                    id="leadName" 
-                    className="form-control" 
-                    value={leadName} 
-                    onChange={(e) => setLeadName(e.target.value)} 
                     required 
                 />
             </div>

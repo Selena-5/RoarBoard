@@ -1,11 +1,12 @@
 const express = require('express');
 const router = express.Router();
 const db = require('../../server/db');
-const authenticateToken = require('../../middleware/authenticateToken') 
+const authenticateToken = require('../../middleware/authenticateToken');
 // Endpoint to create a new club
-router.post('/create', authenticateToken,(req, res) => {
-    console.log('POST /create endpoint hit');
-    const { name, description} = req.body;
+router.post('/create', authenticateToken, (req, res) => {
+    console.log('POST /create endpoint hit', req.body);
+    console.log('User ID from token:', req.userId); // Check if userId is present
+    const { name, description } = req.body;
     const created_by = req.userId;
     console.log('Received data:', { name, description, created_by });
 
@@ -13,12 +14,12 @@ router.post('/create', authenticateToken,(req, res) => {
     db.query(query, [name, description, created_by], (err, result) => {
         if (err) {
             console.error('Error inserting data:', err);
-            return res.status(500).json({ error: err.message });
+            return res.status(500).json({ error: 'Database insertion error' });
         }
-        console.log('Insert result:', result);
         res.status(201).json({ message: 'Club created successfully', clubId: result.insertId });
     });
 });
+
 
 // Endpoint to get clubs with creator details
 router.get('/details/:clubId', (req, res) => {
@@ -39,12 +40,9 @@ router.get('/details/:clubId', (req, res) => {
 });
 
 // Endpoint to get clubs created by a user
-router.get('/created/:userId', (req, res) => {
+router.get('/created/:userId', authenticateToken, (req, res) => {
     const userId = req.params.userId;
-    const query = `
-        SELECT * FROM clubs
-        WHERE created_by = ?
-    `;
+    const query = 'SELECT * FROM clubs WHERE created_by = ?';
     db.query(query, [userId], (err, results) => {
         if (err) {
             console.error('Error fetching created clubs:', err);

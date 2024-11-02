@@ -1,4 +1,3 @@
-// src/Profile.js
 import React, { useEffect, useState } from 'react';
 import './Profile.css';
 import { useNavigate } from 'react-router-dom';
@@ -6,19 +5,23 @@ import axios from 'axios';
 
 const Profile = () => {
   const [user, setUser] = useState(null);
-  const [error, setError] = useState(null);
   const [createdClubs, setCreatedClubs] = useState([]);
+  const [error, setError] = useState(null);
   const navigate = useNavigate();
-  //const [followedClubs, setFollowedClubs] = useState([]);
+
   useEffect(() => {
     const token = localStorage.getItem('token');
-    axios.get('/api/clubs/created', {
-        headers: {
-            'Authorization': token
-        }
-    })
-    .then(response => setCreatedClubs(response.data))
-    .catch(error => console.error('Error fetching created clubs', error));
+    const userId = user ? user.id : null; // Ensure user ID is available
+    if (userId) {
+        axios.get(`/api/clubs/created/${userId}`, {
+            headers: {
+                'Authorization': `Bearer ${token}`
+            }
+        })
+        .then(response => setCreatedClubs(response.data))
+        .catch(error => setError('Error fetching created clubs: ' + error.message));
+    }
+    
     const fetchUserProfile = async () => {
       try {
         const response = await fetch('http://localhost:3001/users/protected', {
@@ -55,12 +58,13 @@ const Profile = () => {
         <p><strong>Username:</strong> {user.username}</p>
         <p><strong>Email:</strong> {user.email}</p>
         <button onClick={() => navigate('/create-club')} className="btn btn-primary">Create a Club</button>
-            <h3>Created Clubs:</h3>
-            <ul>
-                {createdClubs.map(club => (
-                    <li key={club.id}>{club.name}: {club.description}</li>
-                ))}
-            </ul>
+        
+        <h3>Created Clubs:</h3>
+        <ul>
+          {createdClubs.map(club => (
+            <li key={club.id}>{club.name}: {club.description}</li>
+          ))}
+        </ul>
       </div>
     </div>
   );

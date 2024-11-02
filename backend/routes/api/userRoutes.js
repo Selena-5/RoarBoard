@@ -62,8 +62,8 @@ router.post('/login', async (req, res) => {
       maxAge: 3600000, // 1 hour
     });
 
-    // Login successful
-    res.status(200).json({ message: 'Login successful', userId: user.id });
+    // Login successful & including token in body
+    res.status(200).json({ message: 'Login successful', userId: user.id, token });
   });
 });
 

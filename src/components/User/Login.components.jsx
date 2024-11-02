@@ -12,30 +12,33 @@ const Login = () => {
     e.preventDefault();
 
     try {
-      const response = await fetch('http://localhost:3001/users/login', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        credentials: 'include', // This is important to include cookies
-        body: JSON.stringify({
-          email,
-          password,
-        }),
-      });
+        const response = await fetch('http://localhost:3001/users/login', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            credentials: 'include',
+            body: JSON.stringify({
+                email,
+                password,
+            }),
+        });
 
-      const data = await response.json();
+        const data = await response.json();
 
-      if (response.ok) {
-        setMessage(data.message);
-        navigate('/clubs'); // Redirect to /clubs after successful login
-      } else {
-        setMessage('Login failed: ' + data.error);
-      }
+        if (response.ok) {
+            // Store the token in localStorage
+            //localStorage.setItem('token', data.token);
+            setMessage(data.message);
+            navigate('/clubs'); // Redirect to /clubs after successful login
+        } else {
+            setMessage('Login failed: ' + data.error);
+        }
     } catch (error) {
-      setMessage('Login failed: ' + error.message);
+        setMessage('Login failed: ' + error.message);
     }
-  };
+};
+
 
   return (
     <div className="login-container">
