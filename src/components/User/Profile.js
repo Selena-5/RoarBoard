@@ -43,6 +43,26 @@ const Profile = () => {
     fetchUserProfile();
   }, []);
 
+  const fetchCreatedClubs = async () => {
+    const token = localStorage.getItem('token');
+    const userId = user.id;
+
+    try {
+        const response = await axios.get(`/api/clubs/created/${userId}`, {
+            headers: {
+                'Authorization': `Bearer ${token}`
+            }
+        });
+        setCreatedClubs(response.data);
+    } catch (error) {
+        setError('Error fetching created clubs: ' + error.message);
+    }
+};
+
+const handleClubCreated = () => {
+    fetchCreatedClubs(); // Re-fetch clubs after creating a new one
+};
+
   if (error) {
     return <p className="error-message">Error: {error}</p>;
   }

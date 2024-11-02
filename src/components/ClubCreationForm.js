@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 
-function ClubCreationForm() {
+function ClubCreationForm( { onClubCreated}) {
     const [name, setName] = useState('');
     const [description, setDescription] = useState('');
     const navigate = useNavigate();
@@ -28,6 +28,7 @@ function ClubCreationForm() {
         .then(response => {
             console.log(response.data);
             alert('Form has been submitted successfully');
+            onClubCreated(); // Call the callback to update the list
             navigate('/profile');
         })
         .catch(error => {
