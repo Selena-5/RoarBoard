@@ -10,18 +10,6 @@ const Profile = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    const token = localStorage.getItem('token');
-    const userId = user ? user.id : null; // Ensure user ID is available
-    if (userId) {
-        axios.get(`/api/clubs/created/${userId}`, {
-            headers: {
-                'Authorization': `Bearer ${token}`
-            }
-        })
-        .then(response => setCreatedClubs(response.data))
-        .catch(error => setError('Error fetching created clubs: ' + error.message));
-    }
-    
     const fetchUserProfile = async () => {
       try {
         const response = await fetch('http://localhost:3001/users/protected', {
@@ -35,6 +23,9 @@ const Profile = () => {
 
         const data = await response.json();
         setUser(data.user);
+        
+        // Fetch user's created clubs
+        fetchCreatedClubs(data.user.id);
       } catch (error) {
         setError(error.message);
       }
@@ -43,25 +34,20 @@ const Profile = () => {
     fetchUserProfile();
   }, []);
 
-  const fetchCreatedClubs = async () => {
+  const fetchCreatedClubs = async (userId) => {
     const token = localStorage.getItem('token');
-    const userId = user.id;
 
     try {
-        const response = await axios.get(`/api/clubs/created/${userId}`, {
-            headers: {
-                'Authorization': `Bearer ${token}`
-            }
-        });
-        setCreatedClubs(response.data);
+      const response = await axios.get(`/api/clubs/created/${userId}`, {
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
+      setCreatedClubs(response.data);
     } catch (error) {
-        setError('Error fetching created clubs: ' + error.message);
+      setError('Error fetching created clubs: ' + error.message);
     }
-};
-
-const handleClubCreated = () => {
-    fetchCreatedClubs(); // Re-fetch clubs after creating a new one
-};
+  };
 
   if (error) {
     return <p className="error-message">Error: {error}</p>;
