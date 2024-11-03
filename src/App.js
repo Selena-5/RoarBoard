@@ -12,8 +12,10 @@ import Clubs from './Clubs';
 import Login from './components/User/Login.components';
 import Register from './components/User/Register.components';
 import Logout from './components/User/Logout.components';
-import Calendar from './Calendar';
-import DocAI from './DocAI';
+import Calendar from './Calendar'; 
+import DocAI from './DocAI'; 
+import ClubCreationForm from './components/ClubCreationForm'; 
+
 
 function App() {
   return (
