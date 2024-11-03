@@ -6,13 +6,16 @@ import {
   Link
 } from "react-router-dom";
 import "./App.css";
+import Home from './Home';
 import Profile from './components/User/Profile';
 import Clubs from './Clubs';
 import Login from './components/User/Login.components';
 import Register from './components/User/Register.components';
 import Logout from './components/User/Logout.components';
-import Calendar from './Calendar'; // Import the Calendar component
+import Calendar from './Calendar'; // New
+import DocAI from './DocAI';
 import ClubCreationForm from './components/ClubCreationForm';
+
 
 function App() {
   return (
@@ -27,6 +30,8 @@ function App() {
             <div className="navbar-nav">
               <Link className="nav-item nav-link" to="/Profile">Profile</Link>
               <Link className="nav-item nav-link" to="/Clubs">Clubs</Link>
+              <Link className="nav-item nav-link" to="/Calendar">Calendar</Link>
+              <Link className="nav-item nav-link" to="/DocAI">Doc the AI</Link>
             </div>
             <div className="ml-auto">
               <Link className="btn btn-outline-light" to="/login">Login</Link>
@@ -37,14 +42,15 @@ function App() {
 
         <div className="container mt-4">
           <Routes>
-            <Route path="/" element={<Calendar />} /> {/* Calendar on the main page */}
+            <Route path="/" element={<Home />} />
             <Route path="/profile" element={<Profile />} />
             <Route path="/clubs" element={<Clubs />} />
+            <Route path="/calendar" element={<Calendar />} />
+            <Route path="/docai" element={<DocAI />} />
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
             <Route path="/logout" element={<Logout />} />
             <Route path="/protected" element={<div>Protected content will be here after development.</div>} />
-            <Route path="/create-club" element={<ClubCreationForm />} />
           </Routes>
         </div>
       </div>
