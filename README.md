@@ -16,4 +16,12 @@ Running Requirements:
 - npm install dotenv
 - npm install ajv@^8 ajv-errors@^3
 
-
+How to Run:
+1. Start backend first
+     - cd backend
+     - npm i
+     - npm start
+2. Start Frontend
+     - nvm use 16
+     - npm i
+     - npm start
