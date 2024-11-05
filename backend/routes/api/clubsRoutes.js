@@ -52,5 +52,64 @@ router.get('/created/:userId', authenticateToken, (req, res) => {
     });
 });
 
+// Endpoint to toggle club subscription
+router.post('/subscribe', authenticateToken, (req, res) => {
+    const { clubId, isSubscribed } = req.body;
+    const userId = req.userId;
+
+    if (isSubscribed) {
+        // User is subscribing
+        const query = 'INSERT INTO club_subscriptions (user_id, club_id, joined_at) VALUES (?, ?, NOW())';
+        db.query(query, [userId, clubId], (err, result) => {
+            if (err) {
+                console.error('Error subscribing to club:', err);
+                return res.status(500).json({ error: 'Database error during subscribe' });
+            }
+            res.json({ message: 'Successfully subscribed to club' });
+        });
+    } else {
+        // User is unsubscribing
+        const query = 'DELETE FROM club_subscriptions WHERE user_id = ? AND club_id = ?';
+        db.query(query, [userId, clubId], (err, result) => {
+            if (err) {
+                console.error('Error unsubscribing from club:', err);
+                return res.status(500).json({ error: 'Database error during unsubscribe' });
+            }
+            res.json({ message: 'Successfully unsubscribed from club' });
+        });
+    }
+});
+
+
+// Endpoint to get user subscriptions
+router.get('/subscriptions', authenticateToken, (req, res) => {
+    const userId = req.userId;
+    const query = 'SELECT club_id FROM club_subscriptions WHERE user_id = ?';
+
+    db.query(query, [userId], (err, results) => {
+        if (err) {
+            console.error('Error fetching subscriptions:', err);
+            return res.status(500).json({ error: 'Database error' });
+        }
+        const subscribedClubs = results.map(row => row.club_id);
+        res.json(subscribedClubs);
+    });
+});
+
+// Endpoint to get all clubs
+router.get('/all', (req, res) => {
+    const query = 'SELECT * FROM clubs';
+
+    db.query(query, (err, results) => {
+        if (err) {
+            console.error('Error fetching clubs:', err);
+            return res.status(500).json({ error: 'Database error' });
+        }
+        res.json(results);
+    });
+});
+
+
+
 
 module.exports = router;
