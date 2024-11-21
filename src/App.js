@@ -6,15 +6,15 @@ import {
   Link
 } from "react-router-dom";
 import "./App.css";
-import Home from './Home';
-import Profile from './components/User/Profile';
-import Clubs from './Clubs';
-import Login from './components/User/Login.components';
-import Register from './components/User/Register.components';
-import Logout from './components/User/Logout.components';
-import Calendar from './Calendar'; 
-import DocAI from './DocAI'; 
-import ClubCreationForm from './components/ClubCreationForm'; 
+import Home from './Home.js';
+import Profile from './components/User/Profile.js';
+import Clubs from './Clubs.js';
+import Login from './components/User/Login.components.jsx';
+import Register from './components/User/Register.components.jsx';
+import Logout from './components/User/Logout.components.jsx';
+import Calendar from './Calendar.js'; 
+import DocAI from './DocAI.js'; 
+import ClubCreationForm from './components/ClubCreationForm.js'; 
 
 
 function App() {
