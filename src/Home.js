@@ -27,6 +27,19 @@ function Home() {
         </p>
       </div>
 
+      {/* Add the image */}
+      <img
+        src="/RoarBoardLogo.png" // Replace with your actual image filename
+        alt="RoarBoard Banner"
+        style={{
+          maxWidth: "100%",
+          height: "auto",
+          marginTop: "20px",
+          borderRadius: "10px",
+          boxShadow: "0 4px 10px rgba(0, 0, 0, 0.1)",
+        }}
+      />
+
       <div
         style={{
           marginTop: "40px",

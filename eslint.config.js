@@ -12,24 +12,28 @@ export default [
   // Base configuration for JavaScript
   js.configs.recommended,
 
-  // Import plugin setup
+  // Import plugin configuration
   {
-    plugins: ['import'],
-    rules: {
-      'import/no-unresolved': 'error', // Example rule
-      // Other import plugin rules can be added as needed
+    files: ['src/**/*.js', 'src/**/*.jsx'], // Apply to specific file types
+    plugins: {
+      import: eslintPluginImport, // Register the plugin
     },
-  },
-
-  // Additional custom rules (if needed)
-  {
-    files: ['src/**/*.js', 'src/**/*.jsx'],
+    rules: {
+      // Import rules from the plugin
+      ...eslintPluginImport.configs.recommended.rules,
+      'import/no-unresolved': 'error', // Example additional rule
+    },
     languageOptions: {
       parserOptions: {
         ecmaVersion: 2021,
         sourceType: 'module',
       },
     },
+  },
+
+  // Additional custom rules
+  {
+    files: ['src/**/*.js', 'src/**/*.jsx'],
     rules: {
       // Example: Allow console statements during development
       'no-console': process.env.NODE_ENV === 'production' ? 'warn' : 'off',
