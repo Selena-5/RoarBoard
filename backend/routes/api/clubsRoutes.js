@@ -109,6 +109,56 @@ router.get('/all', (req, res) => {
     });
 });
 
+// Endpoint to schedule a club meeting
+router.post('/schedule-meeting', authenticateToken, (req, res) => {
+    const { clubId, eventName, meetingTime } = req.body;
+    const createdBy = req.userId;
+
+    // Check if the user is the creator of the club
+    const verifyClubQuery = 'SELECT * FROM clubs WHERE id = ? AND created_by = ?';
+    db.query(verifyClubQuery, [clubId, createdBy], (err, result) => {
+        if (err) {
+            console.error('Error verifying club:', err);
+            return res.status(500).json({ error: 'Database verification error' });
+        }
+
+        if (result.length === 0) {
+            return res.status(403).json({ error: 'You are not authorized to schedule meetings for this club' });
+        }
+
+        // Insert meeting into the database
+        const insertMeetingQuery = `
+            INSERT INTO club_meetings (club_id, event_name, meeting_time, created_at)
+            VALUES (?, ?, ?, NOW())
+        `;
+        db.query(insertMeetingQuery, [clubId, eventName, meetingTime], (err, result) => {
+            if (err) {
+                console.error('Error scheduling meeting:', err);
+                return res.status(500).json({ error: 'Database insertion error' });
+            }
+            res.status(201).json({ message: 'Meeting scheduled successfully' });
+        });
+    });
+});
+
+// Endpoint to fetch meetings for a specific club
+router.get('/meetings/:clubId', (req, res) => {
+    const clubId = req.params.clubId;
+
+    const query = `
+        SELECT id, event_name, meeting_time, created_at
+        FROM club_meetings
+        WHERE club_id = ?
+        ORDER BY meeting_time ASC
+    `;
+    db.query(query, [clubId], (err, results) => {
+        if (err) {
+            console.error('Error fetching meetings:', err);
+            return res.status(500).json({ error: 'Database error' });
+        }
+        res.json(results);
+    });
+});
 
 
 
