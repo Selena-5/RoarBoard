@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
+import Calendar from './Calendar';
 
 function Clubs() {
     const [clubs, setClubs] = useState([]);
     const [subscriptions, setSubscriptions] = useState([]);
+    const [selectedClubId, setSelectedClubId] = useState(null); // State to track the club for which to show the calendar
     const token = localStorage.getItem('authToken');
-
 
     useEffect(() => {
         // Fetch all clubs
@@ -49,6 +50,13 @@ function Clubs() {
                         onChange={() => handleToggle(club.id)}
                     />
                     <label className="form-check-label" htmlFor={`club-${club.id}`}>{club.name}</label>
+                    <button
+                        className="btn btn-link"
+                        onClick={() => setSelectedClubId(selectedClubId === club.id ? null : club.id)}
+                    >
+                        {selectedClubId === club.id ? 'Hide Calendar' : 'Show Calendar'}
+                    </button>
+                    {selectedClubId === club.id && <Calendar clubId={club.id} />}
                 </div>
             ))}
         </div>
