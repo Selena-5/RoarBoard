@@ -1,42 +1,43 @@
 import { FlatCompat } from '@eslint/eslintrc';
 import js from '@eslint/js';
 import eslintPluginImport from 'eslint-plugin-import';
+import eslintPluginReact from 'eslint-plugin-react';
+import eslintPluginReactHooks from 'eslint-plugin-react-hooks';
 
 const compat = new FlatCompat();
 
 export default [
-  // Compatibility with older configs
-  ...compat.extends('react-app'),
-  ...compat.extends('react-app/jest'),
-
   // Base configuration for JavaScript
   js.configs.recommended,
 
-  // Import plugin configuration
+  // Plugin configurations
   {
-    files: ['src/**/*.js', 'src/**/*.jsx'], // Apply to specific file types
+    files: ['src/**/*.js', 'src/**/*.jsx'],
     plugins: {
-      import: eslintPluginImport, // Register the plugin
+      import: eslintPluginImport,
+      react: eslintPluginReact,
+      'react-hooks': eslintPluginReactHooks,
     },
     rules: {
-      // Import rules from the plugin
       ...eslintPluginImport.configs.recommended.rules,
-      'import/no-unresolved': 'error', // Example additional rule
+      ...eslintPluginReact.configs.recommended.rules,
+      ...eslintPluginReactHooks.configs.recommended.rules,
+      'import/no-unresolved': 'error',
+      'react/react-in-jsx-scope': 'off', // Disable React import requirement for JSX (newer React versions)
     },
     languageOptions: {
       parserOptions: {
         ecmaVersion: 2021,
         sourceType: 'module',
+        ecmaFeatures: {
+          jsx: true,
+        },
       },
     },
-  },
-
-  // Additional custom rules
-  {
-    files: ['src/**/*.js', 'src/**/*.jsx'],
-    rules: {
-      // Example: Allow console statements during development
-      'no-console': process.env.NODE_ENV === 'production' ? 'warn' : 'off',
+    settings: {
+      react: {
+        version: 'detect',
+      },
     },
   },
 ];

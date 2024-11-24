@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import Calendar from './Calendar';
+import Calendar from './Calendar.js';
 
 function Clubs() {
     const [clubs, setClubs] = useState([]);
