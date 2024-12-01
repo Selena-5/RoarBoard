@@ -2,21 +2,44 @@ const express = require('express');
 const router = express.Router();
 const db = require('../../server/db');
 const authenticateToken = require('../../middleware/authenticateToken');
+
 // Endpoint to create a new club
 router.post('/create', authenticateToken, (req, res) => {
     console.log('POST /create endpoint hit', req.body);
     console.log('User ID from token:', req.userId); // Check if userId is present
-    const { name, description } = req.body;
-    const created_by = req.userId;
-    console.log('Received data:', { name, description, created_by });
 
-    const query = 'INSERT INTO clubs (name, description, created_by) VALUES (?, ?, ?)';
-    db.query(query, [name, description, created_by], (err, result) => {
+    const { name, description, meetingTime, eventName } = req.body; // Include meetingTime and eventName
+    const created_by = req.userId;
+
+    console.log('Received data:', { name, description, meetingTime, eventName, created_by });
+
+    // Insert the club into the 'clubs' table
+    const insertClubQuery = 'INSERT INTO clubs (name, description, created_by) VALUES (?, ?, ?)';
+    db.query(insertClubQuery, [name, description, created_by], (err, result) => {
         if (err) {
-            console.error('Error inserting data:', err);
+            console.error('Error inserting club data:', err);
             return res.status(500).json({ error: 'Database insertion error' });
         }
-        res.status(201).json({ message: 'Club created successfully', clubId: result.insertId });
+
+        const clubId = result.insertId; // Get the ID of the newly created club
+
+        // Insert the first meeting for the club into the 'club_meetings' table
+        const insertMeetingQuery = `
+            INSERT INTO club_meetings (club_id, event_name, meeting_time, created_at)
+            VALUES (?, ?, ?, NOW())
+        `;
+        db.query(insertMeetingQuery, [clubId, eventName, meetingTime], (err, meetingResult) => {
+            if (err) {
+                console.error('Error inserting meeting data:', err);
+                return res.status(500).json({ error: 'Database insertion error for meeting' });
+            }
+
+            res.status(201).json({
+                message: 'Club created successfully with meeting scheduled',
+                clubId: clubId,
+                meetingId: meetingResult.insertId
+            });
+        });
     });
 });
 
