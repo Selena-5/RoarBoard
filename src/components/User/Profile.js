@@ -48,8 +48,41 @@ const Profile = () => {
         }
     };
 
+    // const handleCreateClub = async (e) => {
+    //     e.preventDefault();
+    //     const token = localStorage.getItem('token');
+    //
+    //     try {
+    //         const response = await axios.post(
+    //             '/api/clubs/create',
+    //             {
+    //                 name: clubName,
+    //                 description: clubDescription,
+    //                 meetingTime,
+    //                 eventName // Include event name in the request
+    //             },
+    //             { headers: { Authorization: `Bearer ${token}` } }
+    //         );
+    //
+    //         alert('Club created successfully!');
+    //         setClubName('');
+    //         setClubDescription('');
+    //         setMeetingTime('');
+    //         setEventName(''); // Reset event name field
+    //         fetchCreatedClubs(user.id); // Refresh created clubs
+    //     } catch (error) {
+    //         alert('Error creating club: ' + error.message);
+    //     }
+    // };
     const handleCreateClub = async (e) => {
         e.preventDefault();
+
+        // Validation: Check if all fields are filled
+        if (!clubName || !clubDescription || !meetingTime || !eventName) {
+            alert('Please fill in all fields before creating the club.');
+            return; // Stop further execution if validation fails
+        }
+
         const token = localStorage.getItem('token');
 
         try {
