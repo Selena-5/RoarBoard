@@ -1,36 +1,66 @@
-// Clubs.js
-import React from 'react';
+import React, { useEffect, useState } from 'react';
+import axios from 'axios';
+import Calendar from './Calendar.js';
 
 function Clubs() {
-  return (
-    <>
-      <h3>Toggle which clubs you would like to subscribe to:</h3>
-      <div className="form-check form-switch">
-        <input className="form-check-input" type="checkbox" id="SWEClub" />
-        <label className="form-check-label" htmlFor="SWEClub">Software Engineering Club</label>
-      </div>
-      <div className="form-check form-switch">
-        <input className="form-check-input" type="checkbox" id="BBCLub" />
-        <label className="form-check-label" htmlFor="BBCLub">Basketball Club</label>
-      </div>
-      <div className="form-check form-switch">
-        <input className="form-check-input" type="checkbox" id="HealthClub" />
-        <label className="form-check-label" htmlFor="HealthClub">Health Club</label>
-      </div>
-      <div className="form-check form-switch">
-        <input className="form-check-input" type="checkbox" id="SoccerClub" />
-        <label className="form-check-label" htmlFor="SoccerClub">Soccer Club</label>
-      </div>
-      <div className="form-check form-switch">
-        <input className="form-check-input" type="checkbox" id="WritingClub" />
-        <label className="form-check-label" htmlFor="WritingClub">Writing Club</label>
-      </div>
-      <div className="form-check form-switch">
-        <input className="form-check-input" type="checkbox" id="FBClub" />
-        <label className="form-check-label" htmlFor="FBClub">Football Club</label>
-      </div>
-    </>
-  );
+    const [clubs, setClubs] = useState([]);
+    const [subscriptions, setSubscriptions] = useState([]);
+    const [selectedClubId, setSelectedClubId] = useState(null); // State to track the club for which to show the calendar
+    const token = localStorage.getItem('authToken');
+
+    useEffect(() => {
+        // Fetch all clubs
+        axios.get('/api/clubs/all')
+            .then(response => setClubs(response.data))
+            .catch(error => console.error('Error fetching clubs:', error));
+
+        // Fetch user subscriptions
+        axios.get('/api/clubs/subscriptions', { headers: { Authorization: `Bearer ${token}` } })
+            .then(response => setSubscriptions(response.data))
+            .catch(error => console.error('Error fetching subscriptions:', error));
+    }, []);
+
+    const handleToggle = (clubId) => {
+        const isSubscribed = subscriptions.includes(clubId);
+
+        // Toggle subscription
+        axios.post('/api/clubs/subscribe', {
+            clubId,
+            isSubscribed: !isSubscribed
+        }, { headers: { Authorization: `Bearer ${token}` } })
+            .then(() => {
+                // Update subscriptions state based on toggle
+                setSubscriptions(prev =>
+                    isSubscribed ? prev.filter(id => id !== clubId) : [...prev, clubId]
+                );
+            })
+            .catch(error => console.error('Error updating subscription:', error));
+    };
+
+    return (
+        <div>
+            <h3>Toggle which clubs you would like to subscribe to:</h3>
+            {clubs.map((club) => (
+                <div key={club.id} className="form-check form-switch">
+                    <input
+                        className="form-check-input"
+                        type="checkbox"
+                        id={`club-${club.id}`}
+                        checked={subscriptions.includes(club.id)}
+                        onChange={() => handleToggle(club.id)}
+                    />
+                    <label className="form-check-label" htmlFor={`club-${club.id}`}>{club.name}</label>
+                    <button
+                        className="btn btn-link"
+                        onClick={() => setSelectedClubId(selectedClubId === club.id ? null : club.id)}
+                    >
+                        {selectedClubId === club.id ? 'Hide Calendar' : 'Show Calendar'}
+                    </button>
+                    {selectedClubId === club.id && <Calendar clubId={club.id} />}
+                </div>
+            ))}
+        </div>
+    );
 }
 
 export default Clubs;
